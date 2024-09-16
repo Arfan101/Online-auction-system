@@ -1,0 +1,127 @@
+{% extends 'auctions/layout.html' %}
+{% load static %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Listings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #e9ecef; /* Light gray background */
+            font-family: 'Arial', sans-serif; /* Modern sans-serif font */
+        }
+
+        h1 {
+            color: #343a40; /* Dark gray color for headings */
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .card {
+            margin: 15px;
+            border: none; /* Remove border */
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+            transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+        }
+
+        .card:hover {
+            transform: scale(1.05); /* Slightly enlarge card on hover */
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+        }
+
+        .card-img-top {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            height: 200px; /* Increased height for images */
+            object-fit: cover; /* Cover the container while maintaining aspect ratio */
+        }
+
+        .card-body {
+            background-color: #ffffff; /* White background for card body */
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5em; /* Larger title text */
+            color: #007bff; /* Blue color for titles */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .card-subtitle {
+            color: #6c757d; /* Muted text color for subtitles */
+        }
+
+        .card-text {
+            font-size: 1em; /* Standard text size for descriptions */
+            color: #333;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .flexbox-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px; /* Added margin for better spacing */
+        }
+
+        .no-listings {
+            text-align: center;
+            margin-top: 50px;
+            color: #dc3545; /* Red color for no listings message */
+        }
+    </style>
+</head>
+<body>
+    <h1>Active Listings for {{ category }}</h1>
+
+    {% if items %}
+    <div class="container">
+        <div class="row">
+            {% for item in items_bids %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="{{ item.0.img_url }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.0.title }}</h5>
+                        <h6 class="card-subtitle mb-2">{{ item.0.user.username }}</h6>
+                        <p class="card-text">{{ item.0.description }}</p>
+                        <div class="flexbox-container">
+                            <label class="font-weight-bold">Bid</label>
+                            <label class="font-weight-bold">₹{{ item.1 }}</label>
+                        </div>
+                        <form method="POST" action="{% url 'auctions:listing_details' %}">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ item.0.title }}" name="listing_title">
+                            <button type="submit" class="btn btn-primary">Open</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <h4 class="no-listings">There's no listing at the moment</h4>
+    {% endif %}
+</body>
+</html>
+{% endblock %}

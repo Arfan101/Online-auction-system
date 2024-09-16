@@ -1,0 +1,63 @@
+body {
+    padding: 10px;
+}
+.col-lg.table-header{
+    text-align: center;
+}
+/* Centering the card and adding margin to the top */
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.card {
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Adding padding and margins */
+.card-header, .card-body, .card-footer {
+    padding: 20px;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.card-header h2 {
+    margin: 0;
+}
+
+.card-body {
+    background-color: #f8f9fa;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    bord

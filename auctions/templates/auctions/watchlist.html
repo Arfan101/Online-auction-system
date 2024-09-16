@@ -1,0 +1,89 @@
+{% extends 'auctions/layout.html' %}
+{% load static %}
+
+{% block body %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Pacifico&display=swap');
+
+    .table-container {
+        margin-top: 20px;
+    }
+    .table {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th {
+        background-color: #28a745;
+        color: white;
+        font-family: 'Roboto', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    td {
+        vertical-align: middle;
+        font-family: 'Roboto', sans-serif;
+    }
+    .header-text {
+        font-family: 'Pacifico', cursive;
+        color: #007bff;
+        text-transform: capitalize;
+    }
+    .btn-primary {
+        background-color: #dc3545;
+        border: none;
+        font-family: 'Roboto', sans-serif;
+    }
+    .btn-primary:hover {
+        background-color: #c82333;
+    }
+    .empty-watchlist {
+        text-align: center;
+        color: #6c757d;
+        margin-top: 20px;
+        font-family: 'Roboto', sans-serif;
+    }
+    .table td a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    .table td a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container-fluid table-container">
+    <h2 class="header-text text-center">Watchlist</h2>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Item Name</th>
+                <th scope="col">Starting Bid</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in watchlist %}
+            <tr>
+                <td><a href="{% url 'auctions:listing_details' %}?listing_title={{ item.items.title }}">{{ item.items.title }}</a></td>
+                <td>${{ item.items.starting_bid }}</td>
+                <td>{{ item.items.description }}</td>
+                <td>
+                    <form action="{% url 'auctions:delete_item_watchlist' %}" method="POST">
+                        {% csrf_token %}
+                        <input hidden name="listing_title" value="{{ item.items.title }}"></input>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty-watchlist">Watchlist empty</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

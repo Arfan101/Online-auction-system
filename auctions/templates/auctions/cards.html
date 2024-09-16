@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards View</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'auctions/cards.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+
+    <style>
+    .form-control {
+        background-color: #f8f9fa; /* Light grey background */
+        border: 1px solid #ced4da; /* Border color */
+        border-radius: 5px; /* Rounded corners */
+        padding: 10px; /* Padding inside the textarea */
+        font-size: 16px; /* Font size */
+        color: #495057; /* Text color */
+    }
+
+    .form-control:focus {
+        border-color: #80bdff; /* Border color when focused */
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Shadow when focused */
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Red background */
+        border-color: #dc3545; /* Border color */
+        transition: background-color 0.3s ease-in-out; /* Smooth transition for hover effect */
+    }
+
+    .btn-danger:hover {
+        background-color: #bd2130; /* Darker red when hovered */
+    }
+
+    .modal-footer {
+        padding: 1rem; /* Padding inside the footer */
+        background-color: #f7f7f7; /* Light grey background */
+        border-top: 1px solid #e9ecef; /* Border at the top of the footer */
+        border-radius: 0 0 10px 10px; /* Rounded corners at the bottom */
+    }
+</style>
+    }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-img-top {
+            height: 100px;
+            object-fit: cover; /* Ensures the image covers the div area */
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            background-color: #ffffff;
+        }
+
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .modal-footer {
+            background-color: #f7f7f7;
+        }
+
+        .media-body {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .media-comment {
+            background-color: #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+            transform: scale(1.05); /* Slightly enlarges the button on hover */
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn-danger:hover {
+            background-color: #bd2130;
+            border-color: #b21f2d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <img src="{{item.img_url}}" class="card-img-top" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{item.title}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ user.username }}</h6>
+                    <p class="card-text" style="height: 60px; overflow: hidden;">{{item.description}}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button id="myBtn" class="btn btn-primary" data-toggle="modal" data-target="#myModal">More Details</button>
+                        <div class="d-flex flex-row align-items-center">
+                            <strong>Bid:</strong>
+                            <span class="ml-2" style="font-size: 1.5rem;">${{bid.amount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{item.title}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="media mb-4">
+                    <img src="{{item.img_url}}" class="align-self-start mr-3 img-fluid rounded-circle" alt="Profile Image" style="width: 80px;">
+                    <div class="media-body">
+                        <h5>{{user.username}}</h5>
+                        <p class="text-muted">Bidding since 22/09/2014</p>
+                        <p class="media-comment">Great job, keep it up!</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="comment">Add a comment:</label>
+                    <textarea class="form-control" id="comment" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

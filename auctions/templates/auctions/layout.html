@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Auctions{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .navbar-custom {
+            background-color: #000; /* Black background */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: red !important;
+            font-size: 1em; /* Slightly larger for emphasis */
+            font-weight: bold; /* More emphasis on text weight */
+            text-transform: uppercase;
+            transition: color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .navbar-brand:hover, .nav-link:hover {
+            color: #007bff; /* Highlight color on hover */
+            text-decoration: none;
+            transform: scale(1.1); /* Slightly increase size on hover */
+        }
+
+        .navbar-brand {
+            font-family: 'CursiveFont', cursive; /* Custom font for logo */
+            font-size: 2.2em; /* Larger size for the logo */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Shadow effect for depth */
+            letter-spacing: 1.5px; /* Increase letter spacing */
+            color: #FFD700; /* Golden color for a luxurious feel */
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-size: 1em; /* Slightly larger for emphasis */
+            font-weight: bold; /* Ensure text is bold */
+            text-transform: uppercase; /* Uppercase text */
+            transition: color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .nav-link {
+            font-size: 1em; /* Adjust font size */
+            font-weight: bold; /* Ensure text is bold */
+            padding: 10px 15px; /* Padding for better spacing */
+            color: white; /* Default color to white */
+        }
+
+        .nav-link:hover {
+            color: #FFD700; /* Change to gold on hover */
+            text-decoration: none; /* Remove underline on hover */
+        }
+
+        .navbar-custom .navbar-toggler {
+            background-color: rgba(255, 255, 255, 0.3); /* Slightly transparent white */
+        }
+
+        .nav-item {
+            display: inline-block; /* Ensures nav items are aligned horizontally */
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'auctions:index' %}">Auction Arena</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'auctions:index' %}">ACTIVE LISTINGS</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'auctions:logout' %}">LOG OUT</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'auctions:add' %}">ADD ITEM</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'auctions:watchlist' %}">WATCHLIST</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'auctions:auctions_history' %}">AUCTIONS HISTORY</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'auctions:login' %}">LOG IN</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'auctions:register' %}">REGISTER</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'auctions:category_list' %}">CATEGORIES</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <hr>
+
+    {% block body %}
+    {% endblock %}
+</body>
+</html>

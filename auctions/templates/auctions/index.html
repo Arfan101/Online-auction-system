@@ -1,0 +1,179 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<h2 class="text-center my-4">Active Listings</h2>
+
+{% if message %}
+    <div class="alert alert-info text-center">{{ message }}</div>
+{% endif %}
+
+{% if items %}
+    <div class="container">
+        <div class="row">
+            {% for item in items_bids %}
+                {% if item.0.status %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img class="card-img-top" src="{{ item.0.img_url }}" alt="Card image cap" style="object-fit: cover; height: 200px; transition: transform 0.2s;">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase font-weight-bold text-primary">
+                                    <span style="display: block; overflow: hidden; white-space: nowrap; height: 23px; text-overflow: ellipsis;">
+                                        {{ item.0.title }}
+                                    </span>
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ item.0.user.username }}</h6>
+                                <p class="card-text" style="font-size: 0.9em; color: #555;">
+                                    <span style="display: block; overflow: hidden; white-space: nowrap; height: 23px; text-overflow: ellipsis;">
+                                        {{ item.0.description }}
+                                    </span>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <label class="font-weight-bold" style="font-size: 1.2em;">Bid</label>
+                                    <label style="font-size: 1.5em; color: #28a745;">
+                                        ₹{{ item.1|default:item.0.starting_bid }}
+                                    </label>
+                                </div>
+                                <div class="d-flex justify-content-around">
+                                    <form method="POST" action="{% url 'auctions:listing_details' %}">
+                                        {% csrf_token %}
+                                        <input hidden type="text" value="{{ item.0.title }}" name="listing_title">
+                                        <button class="btn btn-primary" type="submit" style="background-color: #007bff; border: none; transition: background-color 0.3s ease;">Open</button>
+                                    </form>
+                                    <form method="POST" action="{% url 'auctions:index' %}">
+                                        {% csrf_token %}
+                                        <input hidden type="text" value="{{ item.0.title }}" name="listing_title">
+                                        <button class="btn btn-secondary" type="submit" style="background-color: #6c757d; border: none; transition: background-color 0.3s ease;">Add to Watchlist</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <h4 class="text-center text-danger my-4">There's no listing at the moment</h4>
+{% endif %}
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <div style="width: 100%; box-sizing: border-box;">
+                    <div class="box">
+                        <img id="img_item_modal" class="img-fluid" src="" alt="Card image cap">
+                    </div>
+                    <h4 id="modal_title" class="modal-title">{{ item.0.title }}</h4>
+                    <div>
+                        <label>Owner: </label>
+                        <label id="username_label">{{ user.username }}</label>
+                    </div>
+                    <div>
+                        <label>Current Bid: ₹</label>
+                        <label id="modal_bid"></label>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <h5>Comments</h5>
+                <div class="media-list">
+                    <li class="media">
+                        <a class="pull-left" href="#">
+                            <img class="media-object rounded-circle" height="150px" src="{% static 'auctions/media/alejo_cat.jpeg' %}" alt="profile">
+                        </a>
+                        <div class="media-body" style="background-color: #E2E2E2; padding: 20px;">
+                            <h4 class="media-heading text-uppercase reviews">{{ user.username }}</h4>
+                            <ul class="media-date text-uppercase reviews">
+                                <li>22</li>
+                                <li>09</li>
+                                <li>2014</li>
+                            </ul>
+                            <p class="media-comment">Great job Alejo, Keep it up!</p>
+                        </div>
+                    </li>
+                </div>
+                <form method="POST" action="{% url 'auctions:add_comment' %}">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <label for="textAreaComment">New comment</label>
+                        <input hidden type="text" id="uname" name="username" value="{{ user.username }}">
+                        <textarea class="form-control" rows="2" placeholder="Type a comment" id="comment" name="comment"></textarea>
+                        <div class="text-right mt-2">
+                            <button id="addComment" type="submit" class="btn btn-secondary">Comment</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button id="closeModalBtn" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var data = {{ json|safe }};
+    var users = {{ json_users|safe }};
+
+    function showAlert(title) {
+        var match_item = data.filter(item => item["fields"].title == title);
+        var modal = document.getElementById("myModal");
+        var closeModalBtn = document.getElementById("closeModalBtn");
+        closeModalBtn.onclick = closeModal;
+        modal.style.display = "block";
+
+        var box_tag = document.getElementById("img_item_modal");
+        var username_tag = document.getElementById("username_label");
+        var modal_title = document.getElementById("modal_title");
+        var modal_bid = document.getElementById("modal_bid");
+
+        var item_user = Object.fromEntries(Object.entries(users).filter(([k, v]) => v === match_item[0]['fields'].user));
+        username_tag.innerHTML = Object.keys(item_user)[0];
+        modal_title.innerHTML = match_item[0]['fields'].title;
+        modal_bid.innerHTML = match_item[0]['fields'].starting_bid;
+
+        img_item_modal.setAttribute("src", match_item[0]['fields'].img_url);
+    }
+
+    function closeModal(event) {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    window.onload = function() {
+        function closeModal(event) {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+    };
+</script>
+
+<style>
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+
+    .card-title:hover {
+        color: #0056b3;
+        transition: color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>
+
+{% endblock %}
